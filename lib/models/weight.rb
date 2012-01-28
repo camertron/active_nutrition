@@ -1,9 +1,10 @@
 module ActiveNutrition
   class Weight < ActiveRecord::Base
-    ActiveNutrition::Nutrition.establish_connection
-
     set_table_name "weight"
     set_primary_key :NDB_No
+
+    validates :NDB_No, :uniqueness => { :scope => [:Seq] }
+    validates :Seq, :uniqueness => { :scope => [:NDB_No] }
 
     alias_attribute :amount, :Amount
     alias_attribute :grams, :Gm_Wgt

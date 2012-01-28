@@ -2,10 +2,6 @@ module ActiveNutrition
   class Nutrition
     DEFAULT_SEARCH_LIMIT = 10
 
-    def self.establish_connection
-      ActiveRecord::Base.establish_connection(:adapter => 'sqlite3', :database => ActiveNutrition.database)
-    end
-
     def self.search(terms = "", options = {})
       options[:conditions] = ["Long_Desc LIKE ?", "%#{terms.gsub(" ", "%")}%"] unless options[:conditions]
       options[:limit] = DEFAULT_SEARCH_LIMIT unless options[:limit]

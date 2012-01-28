@@ -1,7 +1,5 @@
 module ActiveNutrition
   class FoodDes < ActiveRecord::Base
-    ActiveNutrition::Nutrition.establish_connection
-
     set_table_name "food_des"
     set_primary_key :NDB_No
 
