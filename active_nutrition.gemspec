@@ -13,9 +13,8 @@ Gem::Specification.new do |s|
 
   s.rubyforge_project = "active_nutrition"
 
-  s.files         = `git ls-files`.split("\n")
-  s.test_files    = `git ls-files -- {test,spec,features}/*`.split("\n")
-  s.executables   = `git ls-files -- bin/*`.split("\n").map{ |f| File.basename(f) }
+  s.files         = Dir["lib/**/*"]
+  s.test_files    = Dir["spec/**/*"]
   s.require_paths = ["lib"]
 
   # specify any dependencies here; for example:
@@ -23,6 +22,6 @@ Gem::Specification.new do |s|
 
   s.add_runtime_dependency "activerecord", "~> 3.1.0"
   s.add_runtime_dependency "rubyzip", "~> 0.9.4"
-  s.add_runtime_dependency "activerecord-import", "~> 0.2.8"
-  s.add_runtime_dependency "composite_primary_keys", "~> 4.1.1"
+  s.add_runtime_dependency "activerecord-import", "~> 0.2.9"
+  s.add_runtime_dependency "composite_primary_keys", "~> 4.1.2"
 end

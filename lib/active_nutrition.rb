@@ -1,7 +1,8 @@
 $:.unshift(File.dirname(__FILE__)) unless $:.include?(File.dirname(__FILE__)) || $:.include?(File.expand_path(File.dirname(__FILE__)))
 
 require "active_record"
-require 'activerecord-import'
+require "composite_primary_keys"  # CPK and ar-import MUST be required in this order
+require "activerecord-import"
 require "json"
 
 # base object for retrieving nutrition info, plus a few other handy files
@@ -32,12 +33,11 @@ module ActiveNutrition
 
   def self.configure(options)
     @@database_config = options[:database_config]
+    ActiveNutrition.establish_connection
 
     # require all models, list all migrations
     self.require_dir(File.join(File.dirname(__FILE__), "models"))
     @@migrations = Dir.glob(File.join(File.dirname(__FILE__), "migrations/**/**"))
-
-    ActiveNutrition.establish_connection
   end
 
   def self.establish_connection
@@ -62,12 +62,17 @@ module ActiveNutrition
 
   def self.update
     upd = ActiveNutrition::USDAUpdater.new(:type => :update)
-    upd.reset_db
+    upd.clean
+    upd.download
+    upd.unzip
     execute_update(upd)
   end
 
   def self.rebuild
     upd = ActiveNutrition::USDAUpdater.new(:type => :full)
+    upd.clean
+    upd.download
+    upd.unzip
     upd.reset_db
     execute_update(upd)
   end

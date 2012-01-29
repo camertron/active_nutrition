@@ -10,19 +10,19 @@ module ActiveNutrition
     FULL_FILE = "sr{{release}}.zip"
     UPDATE_FILE = "sr{{release}}upd.zip"
     CURRENT_RELEASE = 24  # as of 2011-11-6
-    DATA_DIR = File.join(File.dirname(File.dirname(File.dirname(__FILE__))), "data")
+    DATA_DIR = File.join(File.dirname(File.dirname(File.dirname(File.dirname(__FILE__)))), "data")
     IMPORT_CHUNK_SIZE = 1000
 
     def initialize(options = {})
       @release = (options[:release] || CURRENT_RELEASE).to_s
-      @usda_map = YAML::load_file(File.join(File.dirname(File.dirname(__FILE__)), "usda_map.yml"))
+      @usda_map = YAML::load_file(File.join(File.dirname(File.dirname(File.dirname(__FILE__))), "usda_map.yml"))
       @type = options[:type] || :update
       @path, @file = self.url_for(@type)
       @zip_file = File.join(DATA_DIR, @file)
       @zip_dir = @zip_file.chomp(File.extname(@zip_file))
     end
 
-    def update
+    def execute
       @usda_map.each_pair do |model_const, data|
         if ActiveNutrition.const_defined?(model_const.to_sym)
           model = ActiveNutrition.const_get(model_const.to_sym)
@@ -72,6 +72,7 @@ module ActiveNutrition
     end
 
     def download
+      FileUtils.mkdir_p(DATA_DIR)
       File.open(File.join(DATA_DIR, @file), "wb") do |f|
         f.sync = true
         f.write(open("#{BASE_URL}#{@path}#{@file}").read)
