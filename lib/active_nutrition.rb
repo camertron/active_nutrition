@@ -12,7 +12,6 @@ require 'zip/zip'
 require 'yaml'
 require 'rake'
 
-require 'active_record'
 require 'composite_primary_keys'
 
 require 'models'
