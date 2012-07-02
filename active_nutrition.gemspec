@@ -1,5 +1,6 @@
-# -*- encoding: utf-8 -*-
-$:.push File.expand_path("../lib", __FILE__)
+# encoding: UTF-8
+
+$:.push File.expand_path("../lib/active_nutrition", __FILE__)
 require "version"
 
 Gem::Specification.new do |s|
@@ -17,11 +18,7 @@ Gem::Specification.new do |s|
   s.test_files    = Dir["spec/**/*"]
   s.require_paths = ["lib"]
 
-  # specify any dependencies here; for example:
-  # s.add_development_dependency "rspec"
-
-  s.add_runtime_dependency "activerecord", "~> 3.1.0"
+  s.add_runtime_dependency "rails", "~> 3.0"
   s.add_runtime_dependency "rubyzip", "~> 0.9.4"
-  s.add_runtime_dependency "activerecord-import", "~> 0.2.9"
   s.add_runtime_dependency "composite_primary_keys", "~> 4.1.2"
 end
