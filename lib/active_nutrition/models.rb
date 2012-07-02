@@ -1,0 +1,33 @@
+# encoding: UTF-8
+
+module ActiveNutrition
+  module Models
+    autoload :Migration, 'active_nutrition/models/migration'
+    autoload :DataSrc,   'active_nutrition/models/data_src'
+    autoload :Datsrcln,  'active_nutrition/models/datsrcln'
+    autoload :DerivCd,   'active_nutrition/models/deriv_cd'
+    autoload :FdGroup,   'active_nutrition/models/fd_group'
+    autoload :FoodDes,   'active_nutrition/models/food_des'
+    autoload :Footnote,  'active_nutrition/models/footnote'
+    autoload :Langdesc,  'active_nutrition/models/langdesc'
+    autoload :Langual,   'active_nutrition/models/langual'
+    autoload :NutData,   'active_nutrition/models/nut_data'
+    autoload :NutrDef,   'active_nutrition/models/nutr_def'
+    autoload :SrcCd,     'active_nutrition/models/src_cd'
+    autoload :Weight,    'active_nutrition/models/weight'
+  end
+end
+
+# require 'active_nutrition/models/migration'
+# require 'active_nutrition/models/data_src'
+# require 'active_nutrition/models/datsrcln'
+# require 'active_nutrition/models/deriv_cd'
+# require 'active_nutrition/models/fd_group'
+# require 'active_nutrition/models/food_des'
+# require 'active_nutrition/models/footnote'
+# require 'active_nutrition/models/langdesc'
+# require 'active_nutrition/models/langual'
+# require 'active_nutrition/models/nut_data'
+# require 'active_nutrition/models/nutr_def'
+# require 'active_nutrition/models/src_cd'
+# require 'active_nutrition/models/weight'
