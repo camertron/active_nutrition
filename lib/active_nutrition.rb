@@ -20,6 +20,7 @@ require 'active_nutrition/objects'
 require 'active_nutrition/utilities'
 require 'active_nutrition/migrations/00000000001_migrations_table'
 
+require 'active_nutrition/version'
 require 'active_nutrition/railtie' if defined?(Rails)
 
 include ActiveNutrition::Models
@@ -59,7 +60,7 @@ module ActiveNutrition
       puts "Clearing tables..."
       upd.reset_db
       execute_update(upd)
-      puts "Done."
+      puts "\nDone."
     end
 
     def search(terms = "", options = {})

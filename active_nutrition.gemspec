@@ -10,7 +10,7 @@ Gem::Specification.new do |s|
   s.email       = ["camertron@gmail.com"]
   s.homepage    = "http://github.com/camertron"
   s.summary     = "USDA nutrition data"
-  s.description = "Updates, maintains, and provides systematic access to USDA nutrition data.  See lib/examples to get started."
+  s.description = "An ActiveRecord-backed collection of models for storing and retrieving nutritional information from the USDA's Nutrient Database."
 
   s.rubyforge_project = "active_nutrition"
 
