@@ -1,3 +1,8 @@
+=== 0.5.1
+
+* Fixed crashing bug (version.rb wasn't required).
+* Edited gemspec description.
+
 === 0.5.0
 
 * Huge refactor to be more consistent with the file layout of other gems.
