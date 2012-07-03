@@ -22,8 +22,8 @@ module ActiveNutrition
 
       def execute
         @usda_map.each_pair do |model_const, data|
-          if ActiveNutrition.const_defined?(model_const.to_sym)
-            model = ActiveNutrition.const_get(model_const.to_sym)
+          if ActiveNutrition::Models.const_defined?(model_const.to_sym)
+            model = ActiveNutrition::Models.const_get(model_const.to_sym)
             cur_file = File.join(@zip_dir, data["file_name"])
             parser = DataFile.new(cur_file)
             record_total = `wc -l "#{cur_file}"`.to_i
@@ -53,7 +53,7 @@ module ActiveNutrition
       def reset_db
         @usda_map.each_key do |model_const|
           if ActiveNutrition::Models.const_defined?(model_const.to_sym)
-            model = ActiveNutrition::Models.const_get(model_const.to_sym)
+            ActiveNutrition::Models.const_get(model_const.to_sym).delete_all
           end
         end
       end
