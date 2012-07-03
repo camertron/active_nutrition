@@ -1,0 +1,119 @@
+FoodDes:
+  file_name: FOOD_DES.txt
+  attribute_order:
+    - NDB_No
+    - FdGrp_Cd
+    - Long_Desc
+    - Shrt_Desc
+    - ComName
+    - ManufacName
+    - Survey
+    - Ref_Desc
+    - Refuse
+    - SciName
+    - N_Factor
+    - Pro_Factor
+    - Fat_Factor
+    - CHO_Factor
+
+NutData:
+  file_name: NUT_DATA.txt
+  attribute_order:
+    - NDB_No
+    - Nutr_No
+    - Nutr_Val
+    - Num_Data_Pts
+    - Std_Error
+    - Src_Cd
+    - Deriv_Cd
+    - Ref_NDB_No
+    - Add_Nutr_Mark
+    - Num_Studies
+    - Min
+    - Max
+    - DF
+    - Low_EB
+    - Up_EB
+    - Stat_Cmt
+    - AddMod_Date
+    - CC
+
+Weight:
+  file_name: WEIGHT.txt
+  attribute_order:
+    - NDB_No
+    - Seq
+    - Amount
+    - Msre_Desc
+    - Gm_Wgt
+    - Num_Data_Pts
+    - Std_Dev
+
+Footnote:
+  file_name: FOOTNOTE.txt
+  attribute_order:
+    - NDB_No
+    - Footnt_No
+    - Footnot_Typ
+    - Nutr_No
+    - Footnot_Txt
+
+FdGroup:
+  file_name: FD_GROUP.txt
+  attribute_order:
+    - FdGrp_CD
+    - FdGrp_Desc
+
+Langual:
+  file_name: LANGUAL.txt
+  attribute_order:
+    - NDB_No
+    - Factor_Code
+
+Langdesc:
+  file_name: LANGDESC.txt
+  attribute_order:
+    - Factor_Code
+    - Description
+
+NutrDef:
+  file_name: NUTR_DEF.txt
+  attribute_order:
+    - Nutr_No
+    - Units
+    - Tagname
+    - NutrDesc
+    - Num_Dec
+    - SR_Order
+
+SrcCd:
+  file_name: SRC_CD.txt
+  attribute_order:
+    - Src_Cd
+    - SrcCd_Desc
+
+DerivCd:
+  file_name: DERIV_CD.txt
+  attribute_order:
+    - Deriv_CD
+    - Deriv_Desc
+
+DataSrc:
+  file_name: DATA_SRC.txt
+  attribute_order:
+    - DataSrc_ID
+    - Authors
+    - Title
+    - Year
+    - Journal
+    - Vol_city
+    - Issue_State
+    - Start_Page
+    - End_Page
+
+Datsrcln:
+  file_name: DATSRCLN.txt
+  attribute_order:
+    - NDB_No
+    - Nutr_No
+    - DataSrc_ID
