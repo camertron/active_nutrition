@@ -42,7 +42,7 @@ _Note_: You can use `an` instead of `active_nutrition` for all rake tasks, eg. `
 
 ### Searching
 
-ActiveNutrition provides a simple `#search` method that executes a SQL `LIKE` statement and returns an array of `Food` instances:
+ActiveNutrition provides a simple `#search` method that executes a SQL `LIKE` statement and returns an array of `Food` objects:
 
 ```ruby
 ActiveNutrition.search("olive oil")
@@ -52,7 +52,7 @@ ActiveNutrition.search("olive oil")
 
 Each `Food` object offers these methods
 
-1.  `#nutrition_facts`: Returns an array of `NutritionFact` objects for each kind of nutrient associated with this food.  Examples include the amount of protein, fat, and sodium.  Each `NutritionFact` object knows its unit (eg. miligrams, grams, etc) and amount per 1 gram of the food:
+1.  `#nutrition_facts`: Returns an array of `NutritionFact` objects for each kind of nutrient associated with this food.  Examples include the amount of protein, fat, and sodium.  Each `NutritionFact` object knows its unit (eg. miligrams, grams, etc) and amount per 1 gram of the food.
 2.  `#weights`: Returns an array of common unit weights for this food (eg. cups, tablespoons, etc) and their gram equivalents.
 3.  `#food_group`: Returns an object that specifies the name and code of the food's food group (eg. Breads, Vegetables, etc).
 
@@ -68,14 +68,14 @@ Each `NutritionFact` object has these important methods:
 ActiveNutrition.search("olive oil").first.nutrition_facts
 ```
 
-Calling `nutrition_facts` on a `Food` object actually returns an instance of `NutritionFacts` that provides a handy `#to_hash` convenience method to hash nutrient amounts by description:
+Calling `#nutrition_facts` on a `Food` object actually returns an instance of `NutritionFacts`, which provides a handy `#to_hash` convenience method to hash nutrient amounts by description:
 
 ```ruby
 # { "Protein" => 0.0, "Total lipid (fat)" => 100.0, ... }
 ActiveNutrition.search("olive oil").first.nutrition_facts.to_hash
 ```
 
-The `to_hash` method is capable of hashing nutrient amounts by any method supported by `NutritionFact` via the `:by` option:
+The `#to_hash` method is capable of hashing nutrient amounts by any method supported by `NutritionFact` via the `:by` option:
 
 ```ruby
 # { 203 => 0.0, 204 => 100.0, 205 => 0.0, 207 => 0.0, ... }
@@ -87,10 +87,10 @@ ActiveNutrition.search("olive oil").first.nutrition_facts.to_hash(:by => :nutrit
 Each `Weight` object offers these methods:
 
 1.  `#amount`: The amount associated with `#measurement`, eg. 1, 0.5, etc.
-2.  `#grams`: Mass in grams.
-3.  `#measurement`: The unit associated with `#amount`, eg. cup, tablespoon, gallon, dash, etc.
+2.  `#measurement`: The unit associated with `#amount`, eg. cup, tablespoon, gallon, dash, etc.
+3.  `#grams`: Mass in grams.
 
-Calling `weights` on a `Food` object actually returns an instance of `Weights` that provides a handy `#to_hash` convenience method to hash weights (grams) by measurement:
+Calling `#weights` on a `Food` object actually returns an instance of `Weights`, which provides a handy `#to_hash` convenience method to hash weights (grams) by measurement:
 
 ```ruby
 # { "tablespoon" => 13.5, "cup" => 216.0, "tsp" => 4.5 }
