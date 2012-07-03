@@ -11,7 +11,7 @@ module ActiveNutrition
         end
 
         task :update => :environment do
-          ActiveNutrition.update
+          raise "Not yet supported."
         end
 
         task :rebuild => :environment do

@@ -62,7 +62,7 @@ module ActiveNutrition
         add_index "abbrev", ["Folic_Acid"], :name => "Abbrev_Folic_Acid_Index"
         add_index "abbrev", ["Panto_Acid"], :name => "Abbrev_Panto_Acid_Index"
 
-        create_table "data_src", :id => false, :force => true do |t|
+        create_table "data_src", :id => false, :primary_key => "DataSrc_ID", :force => true do |t|
           t.integer "DataSrc_ID"
           t.string "Authors"
           t.string "Title"
@@ -76,7 +76,7 @@ module ActiveNutrition
 
         add_index "data_src", ["DataSrc_ID"], :name => "DataSrc_ID_Index"
 
-        create_table "datsrcln", :id => false, :force => true do |t|
+        create_table "datsrcln", :id => false, :primary_key => "NDB_No", :force => true do |t|
           t.integer "NDB_No",                  :null => false
           t.integer "Nutr_No",                 :null => false
           t.string  "DataSrc_ID", :limit => 6, :null => false
@@ -85,7 +85,7 @@ module ActiveNutrition
         add_index "datsrcln", ["NDB_No", "Nutr_No", "DataSrc_ID"], :name => "Datsrcln_NDB_No_Nutr_No_DataSrc_ID_Index", :unique => true
 
         #create_table "deriv_cd", :primary_key => "Deriv_CD", :force => true do |t|
-        create_table "deriv_cd", :id => false, :force => true do |t|
+        create_table "deriv_cd", :id => false, :primary_key => "Deriv_CD", :force => true do |t|
           t.integer "Deriv_CD"
           t.string "Deriv_Desc", :limit => 120
         end
@@ -112,7 +112,7 @@ module ActiveNutrition
           t.float   "CHO_Factor"
         end
 
-        create_table "footnote", :id => false, :force => true do |t|
+        create_table "footnote", :id => false, :primary_key => "Footnt_No", :force => true do |t|
           t.integer "NDB_No",      :null => false
           t.integer "Footnt_No"
           t.string  "Footnot_Typ", :limit => 1
@@ -120,22 +120,21 @@ module ActiveNutrition
           t.string  "Footnot_Txt", :limit => 200
         end
 
-        #create_table "langdesc", :primary_key => "Factor_Code", :force => true do |t|
-        create_table "langdesc", :id => false, :force => true do |t|
+        create_table "langdesc", :id => false, :primary_key => "Factor_Code", :force => true do |t|
           t.string "Factor_Code"
           t.string "Description", :limit => 250
         end
 
         add_index "langdesc", ["Factor_Code"], :name => "LangDesc_Factor_Code_Index"
 
-        create_table "langual", :id => false, :force => true do |t|
+        create_table "langual", :id => false, :primary_key => "NDB_No", :force => true do |t|
           t.integer "NDB_No", :null => false
           t.string  "Factor_Code", :limit => 6, :null => false
         end
 
         add_index "langual", ["NDB_No", "Factor_Code"], :name => "Langual_NDB_No_Factor_Code_Index", :unique => true
 
-        create_table "nut_data", :id => false, :force => true do |t|
+        create_table "nut_data", :id => false, :primary_key => "NDB_No", :force => true do |t|
           t.integer "NDB_No",        :null => false
           t.integer "Nutr_No",       :null => false
           t.float   "Nutr_Val"
@@ -174,7 +173,7 @@ module ActiveNutrition
           t.string "SrcCd_Desc", :limit => 60
         end
 
-        create_table "weight", :id => false, :force => true do |t|
+        create_table "weight", :id => false, :primary_key => "NDB_No", :force => true do |t|
           t.integer "NDB_No",       :null => false
           t.integer "Seq",          :null => false
           t.float   "Amount"

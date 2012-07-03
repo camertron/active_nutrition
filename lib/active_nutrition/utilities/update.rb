@@ -52,9 +52,8 @@ module ActiveNutrition
 
       def reset_db
         @usda_map.each_key do |model_const|
-          if ActiveNutrition.const_defined?(model_const.to_sym)
-            model = ActiveNutrition.const_get(model_const.to_sym)
-            model.destroy_all
+          if ActiveNutrition::Models.const_defined?(model_const.to_sym)
+            model = ActiveNutrition::Models.const_get(model_const.to_sym)
           end
         end
       end
@@ -65,10 +64,12 @@ module ActiveNutrition
       end
 
       def download
-        FileUtils.mkdir_p(DATA_DIR)
-        File.open(File.join(DATA_DIR, @file), "wb") do |f|
-          f.sync = true
-          f.write(open("#{BASE_URL}#{@path}#{@file}").read)
+        unless File.file?(File.join(DATA_DIR, @file))
+          FileUtils.mkdir_p(DATA_DIR)
+          File.open(File.join(DATA_DIR, @file), "wb") do |f|
+            f.sync = true
+            f.write(open("#{BASE_URL}#{@path}#{@file}").read)
+          end
         end
       end
 

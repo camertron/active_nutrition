@@ -5,21 +5,22 @@ $:.push(File.dirname(File.dirname(__FILE__)))
 
 $KCODE = 'UTF-8' unless RUBY_VERSION >= '1.9.0'
 
-require 'json'
 require 'open-uri'
 require 'fileutils'
-require 'zip/zip'
 require 'yaml'
-require 'rake'
 
+require 'rake'
+require 'json'
+require 'zip/zip'
+require 'active_record'
 require 'composite_primary_keys'
 
-require 'models'
-require 'objects'
-require 'utilities'
-require 'migrations/00000000001_migrations_table'
+require 'active_nutrition/models'
+require 'active_nutrition/objects'
+require 'active_nutrition/utilities'
+require 'active_nutrition/migrations/00000000001_migrations_table'
 
-require 'railtie'
+require 'active_nutrition/railtie' if defined?(Rails)
 
 include ActiveNutrition::Models
 include ActiveNutrition::Objects
@@ -46,20 +47,19 @@ module ActiveNutrition
     end
 
     def update
-      upd = Update.new(:type => :update)
-      upd.clean
-      upd.download
-      upd.unzip
-      execute_update(upd)
+      raise "Not yet supported."
     end
 
     def rebuild
       upd = Update.new(:type => :full)
-      upd.clean
+      puts "Downloading data..."
       upd.download
+      puts "Extracting..."
       upd.unzip
+      puts "Clearing tables..."
       upd.reset_db
       execute_update(upd)
+      puts "Done."
     end
 
     def search(terms = "", options = {})

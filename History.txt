@@ -1,0 +1,11 @@
+=== 0.5.0
+
+* Huge refactor to be more consistent with the file layout of other gems.
+* Added the ability to reconstruct the USDA food database via Rake tasks.
+* Added dependency on Rails 3.0 (not just ActiveRecord) so we can use a railtie.
+* Still no tests - coming soon.
+
+=== 0.0.1
+
+* Birthday!
+* Very basic models and search capability.
