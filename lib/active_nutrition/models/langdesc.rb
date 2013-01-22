@@ -3,8 +3,8 @@
 module ActiveNutrition
   module Models
     class Langdesc < ActiveRecord::Base
-      set_table_name "langdesc"
-      set_primary_key :Factor_Code
+      self.table_name = "langdesc"
+      self.primary_key = :Factor_Code
     end
   end
 end

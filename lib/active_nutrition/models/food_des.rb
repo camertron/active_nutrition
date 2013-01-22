@@ -3,8 +3,8 @@
 module ActiveNutrition
   module Models
     class FoodDes < ActiveRecord::Base
-      set_table_name "food_des"
-      set_primary_key :NDB_No
+      self.table_name = "food_des"
+      self.primary_key = :NDB_No
 
       alias_attribute :description, :Long_Desc
       alias_attribute :common_name, :ComName

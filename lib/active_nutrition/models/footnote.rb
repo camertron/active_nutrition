@@ -3,8 +3,8 @@
 module ActiveNutrition
   module Models
     class Footnote < ActiveRecord::Base
-      set_table_name "footnote"
-      set_primary_key :Footnt_No
+      self.table_name = "footnote"
+      self.primary_key = :Footnt_No
     end
   end
 end

@@ -35,7 +35,7 @@ module ActiveNutrition
               data["attribute_order"].each_with_index do |field, index|
                 # update each attribute by explicitly calling the attr= method, just in case
                 # there are custom methods in the model class
-                new_record.send(:"#{field}=", values[index])
+                new_record.write_attribute(field.to_sym, values[index])
               end
 
               new_record.save!

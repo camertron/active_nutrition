@@ -20,5 +20,5 @@ Gem::Specification.new do |s|
 
   s.add_runtime_dependency "activerecord", "~> 3.0"
   s.add_runtime_dependency "rubyzip", "~> 0.9.4"
-  s.add_runtime_dependency "composite_primary_keys", "~> 4.1.2"
+  s.add_runtime_dependency "composite_primary_keys", "~> 5.0.12"
 end
