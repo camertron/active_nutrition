@@ -1,3 +1,7 @@
+=== 0.6.1
+
+* Fixing attr_accessible in Migration model.
+
 === 0.6.0
 
 * Updated version of the composite_primary_keys gem to work with Rails 3.2, fixed a few deprecation warnings in models.
