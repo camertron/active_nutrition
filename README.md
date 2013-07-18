@@ -1,6 +1,6 @@
 ## active_nutrition
 
-ActiveNutrition is an ActiveRecord-backed collection of models for storing and retrieving nutritional information from the USDA's Nutrient Database.
+ActiveNutrition is an ActiveRecord-backed collection of models for storing and retrieving nutritional information from the USDA's Nutrient Database. It has been updated for Rails 4.0, the SR-25 database, and importing with UTF-8 encoding (more on that, below).
 
 ## Installation
 
@@ -8,7 +8,7 @@ ActiveNutrition is an ActiveRecord-backed collection of models for storing and r
 
 ## Usage
 
-ActiveNutrition is meant to be used within a Rails application, but it should work within any Ruby project that uses ActiveRecord 3.0 or greater.
+ActiveNutrition is meant to be used within a Rails application, but it should work within any Ruby project that uses ActiveRecord 4.0 or greater.
 
 ```ruby
 require 'active_nutrition'
@@ -26,7 +26,7 @@ ActiveNutrition has the ability to fetch the current Nutrient Database files fro
 
 With Rails:
 
-```bundle exec rake active_nutrition:migrate active_nutrition:rebuild```
+`bundle exec rake active_nutrition:migrate active_nutrition:rebuild`
 
 Without Rails:
 
@@ -37,8 +37,17 @@ ActiveNutrition.migrate
 ActiveNutrition.rebuild
 ```
 
-_Note_: The full data import could take anywhere from 30 minutes to a few hours depending on how powerful your computer is.
-_Note_: You can use `an` instead of `active_nutrition` for all rake tasks, eg. `rake an:rebuild`.
+_Notes_: The full data import could take anywhere from one to a few hours depending on how powerful your computer is. Also, you can use `an` instead of `active_nutrition` for all rake tasks, eg. `rake an:rebuild`.
+
+### Encoding
+
+The USDA data files are encoded as ISO-8859-1. Most developers, however, want to store data as UTF-8. `rake an:rebuild` can now take arguments to specify the encoding and the models you which to process. The defaults are "UTF-8" and "All", respectively, so running `rake an:rebuild` will import all the records encoded as UTF-8 encoded, using replacements for the chars in the data files found to cause "invalid byte sequence for encoding" errors (that's PostgreSQL wording, but it should be similar for other databases). See the `parse_line` method in utilities/data_file.rb for these replacements. 
+
+If you happen to find other UTF-8 encoding issues simply add a new replacement in `parse_line` and rebuild, passing in the specific model(s) as a single string of space-delimited model names, e.g.:
+
+`bundle exec rake active_nutrition:rebuild["UTF-8","NutrDef Weight"]`
+
+_Notes_: When passing in model names you must also specify the encoding type. Also a "gotcha" is that you cannot add a space after the comma separating the rake task args or you will get a "Don't know how to build task..." error.
 
 ### Searching
 
@@ -104,7 +113,6 @@ No external requirements.
 ## Running Tests
 
 No test suite exists for this gem yet - coming soon!
-
 
 ## Authors
 

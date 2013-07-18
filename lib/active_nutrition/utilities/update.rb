@@ -18,14 +18,17 @@ module ActiveNutrition
         @path, @file = self.url_for(@type)
         @zip_file = File.join(DATA_DIR, @file)
         @zip_dir = @zip_file.chomp(File.extname(@zip_file))
+        @enc_type = options[:encoding]
       end
 
-      def execute
+      def execute(models)
         @usda_map.each_pair do |model_const, data|
+          next if !models.include?("All") && !models.include?(model_const)
+
           if ActiveNutrition::Models.const_defined?(model_const.to_sym)
             model = ActiveNutrition::Models.const_get(model_const.to_sym)
             cur_file = File.join(@zip_dir, data["file_name"])
-            parser = DataFile.new(cur_file)
+            parser = DataFile.new(cur_file, @enc_type)
             record_total = `wc -l "#{cur_file}"`.to_i
             record_count = 0
 
@@ -40,21 +43,30 @@ module ActiveNutrition
 
               new_record.save!
 
-              if record_count % IMPORT_CHUNK_SIZE == 0 || (record_count + 1) == record_total || record_count == 0
+              record_count += 1
+
+              if record_count % IMPORT_CHUNK_SIZE == 0 || record_count == record_total || record_count == 0
                 yield [model.to_s, record_count, record_total] if block_given?
               end
 
-              record_count += 1
             end
           end
         end
       end
 
-      def reset_db
+      def reset_db(models)
+        clearedTables = 0
+
         @usda_map.each_key do |model_const|
-          if ActiveNutrition::Models.const_defined?(model_const.to_sym)
+          if (models.include?("All") || models.include?(model_const))
+            puts "Clearing db table for the " + model_const + " model."
             ActiveNutrition::Models.const_get(model_const.to_sym).delete_all
+            clearedTables += 1
           end
+        end
+
+        if (clearedTables == 0)
+          puts "\nNo tables were cleared, which probably means no valid model names were passed."
         end
       end
 
@@ -65,16 +77,22 @@ module ActiveNutrition
 
       def download
         unless File.file?(File.join(DATA_DIR, @file))
+          puts "Downloading data..."
+
           FileUtils.mkdir_p(DATA_DIR)
           File.open(File.join(DATA_DIR, @file), "wb") do |f|
             f.sync = true
             f.write(open("#{BASE_URL}#{@path}#{@file}").read)
           end
+
+          unzip
         end
       end
 
       def unzip
         Zip::ZipFile.open(@zip_file) do |zip_file|
+          puts "Extracting..."
+
           zip_file.each do |f|
             next unless f.file?
             f_path = File.join(@zip_dir, f.name)

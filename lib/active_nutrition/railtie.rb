@@ -14,8 +14,9 @@ module ActiveNutrition
           raise "Not yet supported."
         end
 
-        task :rebuild => :environment do
-          ActiveNutrition.rebuild
+        task :rebuild, [:encoding, :models] => [:environment] do |t, args|
+          args.with_defaults(:encoding => "UTF-8", :models => "All")
+          ActiveNutrition.rebuild(args[:encoding], args[:models].split(" ").map(&:to_s))
         end
       end
 
