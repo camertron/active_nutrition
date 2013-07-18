@@ -9,9 +9,10 @@ module ActiveNutrition
       FIELD_ENC = '~'
       NULL_FIELDS = ['^^', '~~', "\r\n", '']
 
-      def initialize(file)
+      def initialize(file, enc_type)
         @file = file
         @handle = File.open(file, "r")
+        @enc_type = enc_type
       end
 
       def each
@@ -28,7 +29,26 @@ module ActiveNutrition
       end
 
       def parse_line(line)
-        line.force_encoding("ISO-8859-1")
+        if (@enc_type != "UTF-8")
+          # This is the USDA file native encoding.
+          line.force_encoding("ISO-8859-1")
+        else
+          if (!line.force_encoding("UTF-8").valid_encoding?)
+            puts "\nInvalid UTF-8 char found and fixed! Before / After:\n" + line
+
+            if @file.include?("FOOD_DES")
+              line.encode!("UTF-16", :undef => :replace, :invalid => :replace, :replace => "\"")
+            elsif @file.include?("NUTR_DEF")
+              line.encode!("UTF-16", :undef => :replace, :invalid => :replace, :replace => "µ")
+            end
+
+            line.encode!("UTF-8")
+            puts line + "\n"
+          else
+            line.encode!("UTF-8")
+          end
+        end
+
         #line.byte_size = 8
         line.chomp!("\r\n")
         fields = line.split('^')

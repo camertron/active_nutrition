@@ -2,7 +2,7 @@
 
 module ActiveNutrition
   module Migrations
-    class Sr24 < ActiveRecord::Migration
+    class Sr25 < ActiveRecord::Migration
       def self.up
         create_table "abbrev", :primary_key => "NDB_No", :force => true do |t|
           t.string  "Shrt_Desc",                  :limit => 60
@@ -177,7 +177,7 @@ module ActiveNutrition
           t.integer "NDB_No",       :null => false
           t.integer "Seq",          :null => false
           t.float   "Amount"
-          t.string  "Msre_Desc",    :limit => 80
+          t.string  "Msre_Desc",    :limit => 100
           t.float   "Gm_Wgt"
           t.integer "Num_Data_Pts"
           t.float   "Std_Dev"

@@ -47,20 +47,18 @@ module ActiveNutrition
       end
     end
 
-    def update
-      raise "Not yet supported."
+    def update (models)
+      raise "Not yet supported."     
     end
 
-    def rebuild
-      upd = Update.new(:type => :full)
-      puts "Downloading data..."
+    def rebuild (encoding, models)
+      upd = Update.new(:type => :full, :encoding => encoding)
+      
       upd.download
-      puts "Extracting..."
-      upd.unzip
-      puts "Clearing tables..."
-      upd.reset_db
-      execute_update(upd)
-      puts "\nDone."
+      upd.reset_db(models)
+
+      execute_update(upd, models)
+      puts "\nRebuild process complete.\n"
     end
 
     def search(terms = "", options = {})
@@ -87,9 +85,9 @@ module ActiveNutrition
       @migrations ||= Dir.glob(File.join(File.dirname(__FILE__), "active_nutrition/migrations/**/**.rb"))
     end
 
-    def execute_update(updater)
+    def execute_update(updater, models)
       last_model = nil
-      updater.execute do |model, record_count, record_total|
+      updater.execute(models) do |model, record_count, record_total|
         puts "" unless model == last_model
         print "\rProcessing #{model}, #{record_count} / #{record_total} (#{((record_count.to_f / record_total.to_f) * 100).round}%) records imported"
         STDOUT.flush
