@@ -1,72 +1,48 @@
 # encoding: UTF-8
 
-$:.push(File.dirname(__FILE__))
-$:.push(File.dirname(File.dirname(__FILE__)))
-
-$KCODE = 'UTF-8' unless RUBY_VERSION >= '1.9.0'
-
-require 'open-uri'
-require 'fileutils'
-require 'yaml'
-
 require 'rake'
-require 'json'
-require 'zip/zip'
 require 'active_record'
 require 'composite_primary_keys'
-
-require 'active_nutrition/models'
-require 'active_nutrition/objects'
-require 'active_nutrition/utilities'
-require 'active_nutrition/migrations/00000000001_migrations_table'
-
-require 'active_nutrition/version'
 require 'active_nutrition/railtie' if defined?(Rails)
 
-include ActiveNutrition::Models
-include ActiveNutrition::Objects
-include ActiveNutrition::Utilities
-
 module ActiveNutrition
-  DEFAULT_SEARCH_LIMIT = 10
+  autoload :Models,    'active_nutrition/models'
+  autoload :Objects,   'active_nutrition/objects'
+  autoload :Utilities, 'active_nutrition/utilities'
 
   class << self
-    def migrate
-      current_migrations = Migration.find(:all).map(&:sequence_no)
-    rescue ActiveRecord::StatementInvalid => e
-      ActiveNutrition::Migrations::MigrationsTable.up
-      Migration.create(:sequence_no => 1)
-      current_migrations = Migration.find(:all).map(&:sequence_no)
-    ensure
-      next_migrations = migrations.reject { |file| (current_migrations || []).include?(File.basename(file)[0..11].to_i) }.sort
-      next_migrations.each do |file|
-        require file
-        migration_class = ActiveNutrition::Migrations.const_get(File.basename(file).split("_")[1..-1].map(&:capitalize).join("").chomp(".rb"))
-        migration_class.up
-        Migration.create(:sequence_no => File.basename(file)[0..11].to_i)
-      end
-    end
+    DEFAULT_SEARCH_LIMIT = 10
 
-    def update
-      raise "Not yet supported."
-    end
+    include Models
+    include Objects
 
     def rebuild
-      upd = Update.new(:type => :full)
-      puts "Downloading data..."
+      upd = Utilities::Update.new(type: :full)
+      puts 'Downloading data...'
       upd.download
-      puts "Extracting..."
+      puts 'Extracting...'
       upd.unzip
-      puts "Clearing tables..."
+      puts 'Clearing tables...'
       upd.reset_db
       execute_update(upd)
       puts "\nDone."
     end
 
-    def search(terms = "", options = {})
-      options[:conditions] ||= ["Long_Desc LIKE ? OR Long_Desc LIKE ?", "%#{terms.gsub(" ", "%")}%", "%#{terms.split(" ").reverse.join("%")}%"]
-      options[:limit] ||= DEFAULT_SEARCH_LIMIT
-      Food.wrap(FoodDes.find(:all, options))
+    def search(terms = '', options = {})
+      match_conditions = [
+        "%#{terms.gsub(' ', '%')}%",
+        "%#{terms.split(' ').reverse.join('%')}%"
+      ]
+
+      query = match_conditions.uniq.inject(nil) do |ret, condition|
+        match = FoodDes.arel_table[:Long_Desc].matches(condition)
+        next ret.or(match) if ret
+        match
+      end
+
+      limit = options.fetch(:limit, DEFAULT_SEARCH_LIMIT)
+
+      Food.wrap(FoodDes.where(query).limit(limit).to_a)
     end
 
     def get(ndb_no)
@@ -74,23 +50,19 @@ module ActiveNutrition
     end
 
     def convert(value, options = {})
-      UnitConverter.convert(value, options)
+      Utilities::UnitConverter.convert(value, options)
     end
 
     def supported_conversion?(options)
-      UnitConverter.supported_conversion?(options)
+      Utilities::UnitConverter.supported_conversion?(options)
     end
 
-    protected
-
-    def migrations
-      @migrations ||= Dir.glob(File.join(File.dirname(__FILE__), "active_nutrition/migrations/**/**.rb"))
-    end
+    private
 
     def execute_update(updater)
       last_model = nil
       updater.execute do |model, record_count, record_total|
-        puts "" unless model == last_model
+        puts '' unless model == last_model
         print "\rProcessing #{model}, #{record_count} / #{record_total} (#{((record_count.to_f / record_total.to_f) * 100).round}%) records imported"
         STDOUT.flush
         last_model = model

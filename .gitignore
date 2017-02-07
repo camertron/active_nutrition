@@ -4,3 +4,4 @@ Gemfile.lock
 pkg/*
 data/*
 .DS_Store
+spec/fixtures/*

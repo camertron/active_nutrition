@@ -11,24 +11,25 @@ module ActiveNutrition
 
       def initialize(file)
         @file = file
-        @handle = File.open(file, "r")
+        @handle = File.open(file, 'r')
       end
 
       def each
         @handle.each do |line|
-          yield self.parse_line(line)
+          yield parse_line(line)
         end
-        self.clean_up
+
+        clean_up
       end
 
-      protected
+      private
 
       def clean_up
         @handle.close
       end
 
       def parse_line(line)
-        line.force_encoding("ISO-8859-1")
+        line.force_encoding('ISO-8859-1')
         #line.byte_size = 8
         line.chomp!("\r\n")
         fields = line.split('^')
@@ -53,7 +54,7 @@ module ActiveNutrition
               # check to see if its a date, add as a string for now
               p_fields << field
             else
-              p_fields << field.to_i  
+              p_fields << field.to_i
             end
           end
         end

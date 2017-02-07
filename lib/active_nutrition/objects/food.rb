@@ -3,14 +3,16 @@
 module ActiveNutrition
   module Objects
     class Food < Base
-      METHOD_MAP = { :name => :Long_Desc,
-                     :ndb_number => :NDB_No,
-                     :common_name => :ComName,
-                     :manufacturers_name => :ManufacName,
-                     :survey => :Survey,
-                     :scientific_name => :SciName,
-                     :fat_factor => :Fat_Factor,
-                     :protein_factor => :Pro_Factor }
+      METHOD_MAP = {
+        name: :Long_Desc,
+        ndb_number: :NDB_No,
+        common_name: :ComName,
+        manufacturers_name: :ManufacName,
+        survey: :Survey,
+        scientific_name: :SciName,
+        fat_factor: :Fat_Factor,
+        protein_factor: :Pro_Factor
+      }
 
       METHOD_MAP.each_pair do |method, attr_name|
         define_method(method) { attributes[attr_name.to_s] }
@@ -23,11 +25,11 @@ module ActiveNutrition
       end
 
       def nutrition_facts
-        @nutrition_facts ||= NutritionFacts.new(NutritionFact.wrap(base_model.nutrition_facts))
+        @nutrition_facts ||= NutritionFacts.new(NutritionFact.wrap(base_model.nutrition_facts.to_a))
       end
 
       def weights
-        @weights ||= Weights.new(Weight.wrap(base_model.weights))
+        @weights ||= Weights.new(Weight.wrap(base_model.weights.to_a))
       end
 
       def factors

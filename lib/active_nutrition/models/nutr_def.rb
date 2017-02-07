@@ -3,7 +3,7 @@
 module ActiveNutrition
   module Models
     class NutrDef < ActiveRecord::Base
-      self.table_name = "nutr_def"
+      self.table_name = 'nutr_def'
       self.primary_key = :Nutr_No
 
       alias_attribute :units, :Units

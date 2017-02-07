@@ -1,21 +1,27 @@
 # encoding: UTF-8
 
+require 'activerecord-import/base'
+require 'open-uri'
+require 'fileutils'
+require 'yaml'
+require 'zip'
+
 module ActiveNutrition
   module Utilities
     class Update
-      BASE_URL = "http://www.ars.usda.gov/"
-      BASE_PATH = "SP2UserFiles/Place/12354500/Data/SR{{release}}/dnload/"
-      FULL_FILE = "sr{{release}}.zip"
-      UPDATE_FILE = "sr{{release}}upd.zip"
+      BASE_URL = 'https://www.ars.usda.gov/'
+      BASE_PATH = 'ARSUserFiles/80400525/Data/SR{{release}}/dnload/'
+      FULL_FILE = 'sr{{release}}.zip'
+      UPDATE_FILE = 'sr{{release}}upd.zip'
       CURRENT_RELEASE = ActiveNutrition::USDA_VERSION
-      DATA_DIR = File.join(File.dirname(File.dirname(File.dirname(File.dirname(__FILE__)))), "data")
+      DATA_DIR = File.join(File.dirname(File.dirname(File.dirname(File.dirname(__FILE__)))), 'data')
       IMPORT_CHUNK_SIZE = 1000
 
       def initialize(options = {})
         @release = (options[:release] || CURRENT_RELEASE).to_s
-        @usda_map = YAML::load_file(File.join(File.dirname(__FILE__), "usda_map.yml"))
+        @usda_map = YAML::load_file(File.join(File.dirname(__FILE__), 'usda_map.yml'))
         @type = options[:type] || :update
-        @path, @file = self.url_for(@type)
+        @path, @file = url_for(@type)
         @zip_file = File.join(DATA_DIR, @file)
         @zip_dir = @zip_file.chomp(File.extname(@zip_file))
       end
@@ -24,24 +30,27 @@ module ActiveNutrition
         @usda_map.each_pair do |model_const, data|
           if ActiveNutrition::Models.const_defined?(model_const.to_sym)
             model = ActiveNutrition::Models.const_get(model_const.to_sym)
-            cur_file = File.join(@zip_dir, data["file_name"])
+            cur_file = File.join(@zip_dir, data['file_name'])
             parser = DataFile.new(cur_file)
-            record_total = `wc -l "#{cur_file}"`.to_i
+            record_total = `wc -l '#{cur_file}'`.to_i
             record_count = 0
+            new_records = []
 
             parser.each do |values|
               new_record = model.new
 
-              data["attribute_order"].each_with_index do |field, index|
+              data['attribute_order'].each_with_index do |field, index|
                 # update each attribute by explicitly calling the attr= method, just in case
                 # there are custom methods in the model class
                 new_record.write_attribute(field.to_sym, values[index])
               end
 
-              new_record.save!
+              new_records << new_record
 
               if record_count % IMPORT_CHUNK_SIZE == 0 || (record_count + 1) == record_total || record_count == 0
+                model.import(new_records)
                 yield [model.to_s, record_count, record_total] if block_given?
+                new_records.clear
               end
 
               record_count += 1
@@ -74,7 +83,7 @@ module ActiveNutrition
       end
 
       def unzip
-        Zip::ZipFile.open(@zip_file) do |zip_file|
+        Zip::File.open(@zip_file) do |zip_file|
           zip_file.each do |f|
             next unless f.file?
             f_path = File.join(@zip_dir, f.name)
@@ -84,7 +93,7 @@ module ActiveNutrition
         end
       end
 
-      protected
+      private
 
       def url_for(type = :full)
         file = case type
@@ -93,7 +102,7 @@ module ActiveNutrition
           else UPDATE_FILE
         end
 
-        [BASE_PATH.gsub("{{release}}", @release), file.gsub("{{release}}", @release)]
+        [BASE_PATH.gsub('{{release}}', @release), file.gsub('{{release}}', @release)]
       end
     end
   end
