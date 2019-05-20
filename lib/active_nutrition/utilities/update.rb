@@ -3,7 +3,7 @@
 module ActiveNutrition
   module Utilities
     class Update
-      BASE_URL = "http://www.ars.usda.gov/"
+      BASE_URL = "https://www.ars.usda.gov/"
       BASE_PATH = "SP2UserFiles/Place/12354500/Data/SR{{release}}/dnload/"
       FULL_FILE = "sr{{release}}.zip"
       UPDATE_FILE = "sr{{release}}upd.zip"

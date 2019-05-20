@@ -1,3 +1,6 @@
+=== 0.6.2.
+* Use https in data download URL.
+
 === 0.6.1
 
 * Fixing attr_accessible in Migration model.
